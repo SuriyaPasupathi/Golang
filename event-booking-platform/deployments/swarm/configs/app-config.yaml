@@ -1,0 +1,5 @@
+# Sample configuration file for the services.
+# This could contain any necessary configuration settings.
+
+grpc_server_address: ":50051"
+http_server_address: ":8080"

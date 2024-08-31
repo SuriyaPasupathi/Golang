@@ -1,0 +1,39 @@
+syntax = "proto3";
+
+package booking;
+
+option go_package = "path/to/your/repo/api/proto/booking;bookingpb";
+
+import "google/protobuf/timestamp.proto";
+
+service BookingService {
+    rpc CreateBooking(CreateBookingRequest) returns (CreateBookingResponse);
+    rpc GetBooking(GetBookingRequest) returns (GetBookingResponse);
+}
+
+message CreateBookingRequest {
+    string user_id = 1;
+    string event_id = 2;
+}
+
+message CreateBookingResponse {
+    string id = 1;
+    string message = 2;
+}
+
+message GetBookingRequest {
+    string id = 1;
+}
+
+message GetBookingResponse {
+    string id = 1;
+    string user_id = 2;
+    Event event = 3;
+}
+
+message Event {
+    string id = 1;
+    string name = 2;
+    string location = 3;
+    google.protobuf.Timestamp date = 4;
+}

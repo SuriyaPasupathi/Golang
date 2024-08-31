@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:v2.9
+    command:
+      - "--providers.docker"
+      - "--entrypoints.http.address=:80"
+      - "--entrypoints.https.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=your-email@example.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik/traefik.yaml:/etc/traefik/traefik.yaml"
+      - "./traefik/dynamic:/etc/traefik/dynamic"
+    networks:
+      - frontend
+      - backend
+
+  event-service:
+    image: your-repo/event-service:latest
+    networks:
+      - backend
+    deploy:
+      replicas: 3
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.services.event-service.loadbalancer.server.port=50051"
+
+  booking-service:
+    image: your-repo/booking-service:latest
+    networks:
+      - backend
+    deploy:
+      replicas: 3
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.services.booking-service.loadbalancer.server.port=50052"
+
+  gateway-service:
+    image: your-repo/gateway-service:latest
+    networks:
+      - frontend
+      - backend
+    deploy:
+      replicas: 2
+      labels:
+        - "traefik.enable=true"
+        - "traefik.http.routers.grpc-gateway.rule=Host(`gateway.example.com`)"
+        - "traefik.http.routers.grpc-gateway.entrypoints=https"
+        - "traefik.http.routers.grpc-gateway.tls.certresolver=myresolver"
+        - "traefik.http.services.grpc-gateway.loadbalancer.server.port=8080"
+
+networks:
+  frontend:
+  backend:

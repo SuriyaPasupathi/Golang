@@ -1,0 +1,20 @@
+solids:
+  extract_to_csv:
+    config:
+      database_path: "/path/to/msaccess/database.accdb"
+      query: "SELECT * FROM Products"
+      output_csv_path: "/local/path/to/output.csv"
+  upload_to_blob:
+    config:
+      storage_account_url: "https://youraccount.blob.core.windows.net/"
+      container_name: "yourcontainer"
+      blob_name: "output.csv"
+      connection_string: "your_connection_string"
+  transform_and_load:
+    config:
+      storage_account_url: "https://youraccount.blob.core.windows.net/"
+      container_name: "yourcontainer"
+      blob_name: "output.csv"
+      connection_string: "your_connection_string"
+      elasticsearch_host: "your_elasticsearch_host"
+      elasticsearch_index: "products_index"

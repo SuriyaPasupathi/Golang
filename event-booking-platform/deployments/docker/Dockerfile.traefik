@@ -1,0 +1,10 @@
+# Dockerfile for Traefik (not always necessary, as you can use the official Traefik image)
+
+# Use the official Traefik image as a base
+FROM traefik:v2.9
+
+# Copy Traefik static configuration file
+COPY ./traefik/traefik.yaml /etc/traefik/traefik.yaml
+
+# Copy Traefik dynamic configuration directory
+COPY ./traefik/dynamic /etc/traefik/dynamic

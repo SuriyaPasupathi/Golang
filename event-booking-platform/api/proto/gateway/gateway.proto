@@ -1,0 +1,23 @@
+syntax = "proto3";
+
+package gateway;
+
+option go_package = "path/to/your/repo/api/proto/gateway;gatewaypb";
+
+import "google/api/annotations.proto";
+import "api/proto/event/event.proto";
+import "api/proto/booking/booking.proto";
+
+service GatewayService {
+    rpc ProxyEventService(event.GetEventRequest) returns (event.GetEventResponse) {
+        option (google.api.http) = {
+            get: "/v1/events/{id}"
+        };
+    }
+
+    rpc ProxyBookingService(booking.GetBookingRequest) returns (booking.GetBookingResponse) {
+        option (google.api.http) = {
+            get: "/v1/bookings/{id}"
+        };
+    }
+}

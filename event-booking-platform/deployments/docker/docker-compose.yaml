@@ -1,0 +1,47 @@
+version: '3.8'
+
+services:
+  traefik:
+    image: traefik:v2.9
+    command:
+      - "--providers.docker"
+      - "--entrypoints.http.address=:80"
+      - "--entrypoints.https.address=:443"
+      - "--certificatesresolvers.myresolver.acme.tlschallenge=true"
+      - "--certificatesresolvers.myresolver.acme.email=your-email@example.com"
+      - "--certificatesresolvers.myresolver.acme.storage=/letsencrypt/acme.json"
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock:ro"
+      - "./traefik/traefik.yaml:/etc/traefik/traefik.yaml"
+      - "./traefik/dynamic:/etc/traefik/dynamic"
+
+  event-service:
+    build:
+      context: ../..
+      dockerfile: ./deployments/docker/Dockerfile.event
+    networks:
+      - backend
+
+  booking-service:
+    build:
+      context: ../..
+      dockerfile: ./deployments/docker/Dockerfile.booking
+    networks:
+      - backend
+
+  gateway-service:
+    build:
+      context: ../..
+      dockerfile: ./deployments/docker/Dockerfile.gateway
+    ports:
+      - "8080:8080"
+    networks:
+      - frontend
+      - backend
+
+networks:
+  frontend:
+  backend:

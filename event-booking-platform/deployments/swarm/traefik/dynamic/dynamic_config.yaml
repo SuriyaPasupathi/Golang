@@ -1,0 +1,19 @@
+http:
+  routers:
+    grpc-gateway:
+      rule: "Host(`gateway.example.com`)"
+      entryPoints: ["https"]
+      service: grpc-gateway
+      tls:
+        certResolver: myresolver
+
+  services:
+    grpc-gateway:
+      loadBalancer:
+        servers:
+          - url: "http://gateway-service:8080"
+
+tls:
+  certificates:
+    - certFile: "/path/to/cert.pem"
+      keyFile: "/path/to/key.pem"

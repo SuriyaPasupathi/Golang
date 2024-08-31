@@ -1,0 +1,13 @@
+version: '3.8'
+
+services:
+  dagster:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+    environment:
+      - AZURE_STORAGE_CONNECTION_STRING=your_connection_string
